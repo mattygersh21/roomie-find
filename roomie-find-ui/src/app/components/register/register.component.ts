@@ -1,7 +1,8 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, inject } from '@angular/core';
+import { Component, Inject, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-register',
@@ -10,6 +11,7 @@ import { Router } from '@angular/router';
   imports: [ReactiveFormsModule],
 })
 export class RegisterComponent {
+  authService = inject(AuthService);
   fb = inject(FormBuilder);
   http = inject(HttpClient);
   router = inject(Router);
@@ -22,6 +24,9 @@ export class RegisterComponent {
   errorMessage: string | null = null;
 
   onSubmit(): void {
-    console.log('register');
+    const rawForm = this.form.getRawValue();
+    this.authService.register(rawForm.email,rawForm.username,rawForm.password).subscribe(() => {
+      this.router.navigateByUrl('/')
+    })
   }
 }
